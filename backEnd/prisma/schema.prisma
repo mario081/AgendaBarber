@@ -9,5 +9,40 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
+}
+
+model Barber {
+  id String @id @default(uuid())
+  name String 
+  appointments Appointment[]
+}
+
+model Service {
+    id           String        @id @default(uuid())
+  name         String 
+  price        Decimal
+  duration     Int    
+  appointments Appointment[]
+}
+
+model Appointment {
+  id           String   @id @default(uuid())
+  clientName   String
+  clientPhone  String
+  barber       Barber   @relation(fields: [barberId], references: [id])
+  barberId     String
+  service      Service  @relation(fields: [serviceId], references: [id])
+  serviceId    String
+  startsAt     DateTime
+  endsAt       DateTime
+  status       Status   @default(SCHEDULED)
+  createdAt    DateTime @default(now())
+}
+ 
+enum Status {
+  SCHEDULED 
+  CONFIRMED 
+  CANCELLED 
+  DONE
 }
